@@ -5,14 +5,14 @@
       "@protected": true,
       "id": "@id",
       "type": "@type",
-      "ProofOfDaoLongevity": {
-        "@id": "https://raw.githubusercontent.com/0xPolygonID/tutorial-examples/main/credential-schema/proof-of-dao-longevity.jsonld#ProofOfDaoLongevity",
+      "WiwBadgeOwner": {
+        "@id": "https://raw.githubusercontent.com/KevinYum/polygon-id-schema-test/main/wiw-badge-owner.jsonld#WiwBadgeOwner",
         "@context": {
           "@version": 1.1,
           "@protected": true,
           "id": "@id",
           "type": "@type",
-          "vocab": "https://github.com/0xPolygonID/tutorial-examples/blob/main/credential-schema/proof-of-dao-longevity-vocab.md#",
+          "vocab": "https://github.com/KevinYum/polygon-id-schema-test/blob/main/wiw-badge-owner.md#",
           "xsd": "http://www.w3.org/2001/XMLSchema#",
           "badgeId": {
             "@id": "vocab:badgeId",

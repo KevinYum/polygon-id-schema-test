@@ -3,8 +3,8 @@
     "type": "object",
     "$metadata": {
       "uris": {
-        "jsonLdContext": "https://raw.githubusercontent.com/0xPolygonID/tutorial-examples/main/credential-schema/proof-of-dao-longevity.jsonld",
-        "jsonSchema": "https://raw.githubusercontent.com/0xPolygonID/tutorial-examples/main/credential-schema/proof-of-dao-longevity.json"
+        "jsonLdContext": "https://raw.githubusercontent.com/KevinYum/polygon-id-schema-test/main/wiw-badge-owner.jsonld",
+        "jsonSchema": "https://raw.githubusercontent.com/KevinYum/polygon-id-schema-test/main/wiw-badge-owner.json"
       }
     },
     "required": [
