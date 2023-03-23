@@ -3,7 +3,7 @@ const {auth, resolver, loaders} = require('@iden3/js-iden3-auth')
 const getRawBody = require('raw-body')
 
 const app = express();
-const port = 4001;
+const port = 4005;
 
 app.use(express.static('static'));
 
@@ -28,7 +28,7 @@ const requestMap = new Map();
 async function GetAuthRequest(req,res) {
 
     // Audience is verifier id
-    const hostUrl = "localhost:4001";
+    const hostUrl = `http://138.201.206.172:${port}`;
     const sessionId = 1;
     const callbackURL = "/api/callback"
     const audience = "did:polygonid:polygon:mumbai:2qMw4SH4a5WvWkPSEzxaNi3tf6MYiuCLVvy7T7rCHT"
@@ -72,7 +72,11 @@ async function GetAuthRequest(req,res) {
 // Callback verifies the proof after sign-in callbacks
 async function Callback(req,res) {
     console.log("Receiving callback")
-    console.log(JSON.stringify(req))
+    // get JWZ token params from the post request
+    const raw = await getRawBody(req);
+    const tokenStr = raw.toString().trim();
+    
+    console.log(raw.toString())
 
     // // Get session ID from request
     // const sessionId = req.query.sessionId;
@@ -118,5 +122,5 @@ async function Callback(req,res) {
     // } catch (error) {
     //     return res.status(500).send(error);
     // }
-    // return res.status(200).set('Content-Type', 'application/json').send("user with ID: " + authResponse.from + " Succesfully authenticated");
+    return res.status(200).set('Content-Type', 'application/json').send("user with ID: Succesfully authenticated");
 }
