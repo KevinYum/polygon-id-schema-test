@@ -56,7 +56,6 @@ async function GetAuthRequest(req,res) {
 // Callback verifies the proof after sign-in callbacks
 async function Callback(req,res) {
     console.log("Receiving callback")
-    console.log(JSON.stringify(req))
 
     // Get session ID from request
     const sessionId = req.query.sessionId;
@@ -69,7 +68,7 @@ async function Callback(req,res) {
     const decodedPayload = new Buffer(payload, 'base64').toString('utf-8')
     console.log(decodedPayload)
     const payloadJson = JSON.parse(decodedPayload)
-    console.log(JSON.stringify(payloadJson))
+    console.log(payloadJson.from)
 
     // need to return 200 response to mobile App in time.
     return res.status(200).set('Content-Type', 'application/json').send("Successfully authenticated");
