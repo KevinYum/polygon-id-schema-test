@@ -3,7 +3,7 @@ const {auth, resolver, loaders} = require('@iden3/js-iden3-auth')
 const getRawBody = require('raw-body')
 
 const app = express();
-const port = 4001;
+const port = 4005;
 
 app.use(express.static('static'));
 
@@ -26,18 +26,19 @@ const requestMap = new Map();
 
 // GetQR returns auth request
 async function GetAuthRequest(req,res) {
-
-    // Audience is verifier id
-    const hostUrl = "localhost:4001";
-    const sessionId = 1;
+    // public accessible callback url
+    const hostUrl = `http://138.201.206.172:${port}`;
     const callbackURL = "/api/callback"
+    // use issuer did as audience
     const audience = "did:polygonid:polygon:mumbai:2qMw4SH4a5WvWkPSEzxaNi3tf6MYiuCLVvy7T7rCHT"
+    const sessionId = 1;
 
     const uri = `${hostUrl}${callbackURL}?sessionId=${sessionId}`;
 
     // Generate request for basic authentication
-    const request = auth.createAuthorizationRequest(
-        'test flow',
+    const request = auth.createAuthorizationRequestWithMessage(
+        'bastic authorization',
+        'WIW want to get your did',
         audience,
         uri,
     );
@@ -45,27 +46,10 @@ async function GetAuthRequest(req,res) {
     request.id = '7f38a193-0918-4a48-9fac-36adfdb8b542';
     request.thid = '7f38a193-0918-4a48-9fac-36adfdb8b542';
 
-    // Add request for a specific proof
-    // const proofRequest = {
-    //     id: 1,
-    //     circuitId: 'credentialAtomicQuerySigV2',
-    //     query: {
-    //         allowedIssuers: ['*'],
-    //         type: 'KYCAgeCredential',
-    //         context: 'https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v3.json-ld',
-    //         credentialSubject: {
-    //             birthday: {
-    //                 $lt: 20000101,
-    //             },
-    //         },
-    //     },
-    // };
-    // const scope = request.body.scope ?? [];
-    // request.body.scope = [...scope, proofRequest];
-
-    // Store auth request in map associated with session ID
+    // Track session id throughout the authorization flow, could ignore
     requestMap.set(`${sessionId}`, request);
 
+    // TODO: in practice, the request json could be converted to QR code for polygonID user to scan
     return res.status(200).set('Content-Type', 'application/json').send(request);
 }
 
@@ -74,49 +58,19 @@ async function Callback(req,res) {
     console.log("Receiving callback")
     console.log(JSON.stringify(req))
 
-    // // Get session ID from request
-    // const sessionId = req.query.sessionId;
-    //
-    // // get JWZ token params from the post request
-    // const raw = await getRawBody(req);
-    // const tokenStr = raw.toString().trim();
-    //
-    // const ethURL = '<MUMBAI_RPC_URL>';
-    // const contractAddress = "0x134B1BE34911E39A8397ec6289782989729807a4"
-    // const keyDIR = "../keys"
-    //
-    // const ethStateResolver = new resolver.EthStateResolver(
-    //     ethURL,
-    //     contractAddress,
-    // );
-    //
-    // const resolvers = {
-    //     ['polygon:mumbai']: ethStateResolver,
-    // };
-    //
-    //
-    // // fetch authRequest from sessionID
-    // const authRequest = requestMap.get(`${sessionId}`);
-    //
-    // // Locate the directory that contains circuit's verification keys
-    // const verificationKeyloader = new loaders.FSKeyLoader(keyDIR);
-    // const sLoader = new loaders.UniversalSchemaLoader('ipfs.io');
-    //
-    // // EXECUTE VERIFICATION
-    // const verifier = new auth.Verifier(
-    //     verificationKeyloader,
-    //     sLoader,
-    //     resolvers,
-    // );
-    //
-    //
-    // try {
-    //     const opts = {
-    //         AcceptedStateTransitionDelay: 5 * 60 * 1000, // 5 minute
-    //     };
-    //     authResponse = await verifier.fullVerify(tokenStr, authRequest, opts);
-    // } catch (error) {
-    //     return res.status(500).send(error);
-    // }
-    // return res.status(200).set('Content-Type', 'application/json').send("user with ID: " + authResponse.from + " Succesfully authenticated");
+    // Get session ID from request
+    const sessionId = req.query.sessionId;
+
+    // get JWZ token params from the post request
+    // JWZ: https://0xpolygonid.github.io/tutorials/wallet/wallet-sdk/polygonid-sdk/iden3comm/jwz/#header
+    const raw = await getRawBody(req);
+    const jwzToken = raw.toString().trim();
+    const payload = jwzToken.split('.')[1]
+    const decodedPayload = new Buffer(payload, 'base64').toString('utf-8')
+    console.log(decodedPayload)
+    const payloadJson = JSON.parse(decodedPayload)
+    console.log(JSON.stringify(payloadJson))
+
+    // need to return 200 response to mobile App in time.
+    return res.status(200).set('Content-Type', 'application/json').send("Successfully authenticated");
 }
