@@ -3,8 +3,8 @@
     "type": "object",
     "$metadata": {
       "uris": {
-        "jsonLdContext": "https://raw.githubusercontent.com/KevinYum/polygon-id-schema-test/main/wiw-badge-owner.jsonld",
-        "jsonSchema": "https://raw.githubusercontent.com/KevinYum/polygon-id-schema-test/main/wiw-badge-owner.json"
+        "jsonLdContext": "https://raw.githubusercontent.com/KevinYum/polygon-id-schema-test/main/schema/wiw-badge-owner.jsonld",
+        "jsonSchema": "https://raw.githubusercontent.com/KevinYum/polygon-id-schema-test/main/schema/wiw-badge-owner.json"
       }
     },
     "required": [
